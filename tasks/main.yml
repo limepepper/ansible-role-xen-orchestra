@@ -1,0 +1,42 @@
+---
+
+- tags: [ xen-orchestra ]
+  block:
+
+    - package:
+        name:
+          - build-essential
+          - curl
+          - cifs-utils
+          - git
+          - gnupg
+          - libpng-dev
+          - libvhdi-utils
+          - nfs-common
+          - lvm2
+          - redis-server
+
+    - name: install the xo-orchestrator repo
+      git:
+        repo: http://github.com/vatesfr/xen-orchestra
+        dest: /opt/xen-orchestra/
+        update: true
+
+    - name: run the yarn command
+      command: yarn
+      args:
+        chdir: /opt/xen-orchestra
+        # creates: /path/to/database
+
+    - name: create the /etc/xo-server directory
+      file:
+        name: /etc/xo-server
+        state: directory
+
+    - template:
+        src: sample.config.toml
+        dest: /etc/xo-server/config.toml
+        owner: root
+        group: root
+        mode: '0600'
+        backup: yes
